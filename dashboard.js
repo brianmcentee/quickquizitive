@@ -1,4 +1,4 @@
-import {createWebAccount} from './web-account.js';
+import {createWebAccount} from './web-account.js?v=20261027-dashboard1';
 const $=id=>document.getElementById(id),account=createWebAccount();
 let busy=false;
 function message(text='',error=false){$('account-message').textContent=text;$('account-message').classList.toggle('is-error',error);}
