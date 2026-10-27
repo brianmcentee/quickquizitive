@@ -1,6 +1,6 @@
 # QuickQuizitive download website
 
-This folder is a complete static website. It includes the v0.20.2 extension ZIP, so the Download buttons work without an external file host. Visitors do not need a GitHub account.
+This folder is a complete static website. It includes the v0.20.3 extension ZIP, so the Download buttons work without an external file host. Visitors do not need a GitHub account.
 
 ## Publish free with GitHub Pages
 
@@ -14,7 +14,7 @@ The repository is the editing area; visitors see the designed website at the pub
 
 ## Update the extension download
 
-Put the new extension ZIP in the website folder, then update version numbers and download links in `index.html`. The current download filename is `quickquizitive-v0.20.2.zip`.
+Put the new extension ZIP in the website folder, then update version numbers and download links in `index.html`. The current download filename is `quickquizitive-v0.20.3.zip`.
 
 ## Preview locally
 
@@ -22,4 +22,4 @@ Run `python3 -m http.server 8767` from this folder and open `http://127.0.0.1:87
 
 ## Scope
 
-The download page is free and has no billing or analytics. The extension requires Google sign-in and uses Supabase for the free allowance of three distinct assignments per UTC calendar month. Returning to the same assignment in that month does not consume another use. The interactive hero is a demonstration only and does not connect to assignments. The website does not install the extension automatically; the installation guide explains Chrome's manual Load unpacked flow. Published at https://brianmcentee.github.io/quickquizitive/ using GitHub Pages from main / (root). The first deployment succeeded and the public download was verified against the packaged v0.20.2 extension.
+The download page is free and has no billing or analytics. The extension requires Google sign-in and uses Supabase for the free allowance of three distinct assignments per UTC calendar month. Returning to the same assignment in that month does not consume another use. The interactive hero is a demonstration only and does not connect to assignments. The website does not install the extension automatically; the installation guide explains Chrome's manual Load unpacked flow. Published at https://brianmcentee.github.io/quickquizitive/ using GitHub Pages from main / (root). The first deployment succeeded and the public download was verified against the packaged v0.20.3 extension.
