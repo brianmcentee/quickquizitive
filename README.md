@@ -23,3 +23,9 @@ Run `python3 -m http.server 8767` from this folder and open `http://127.0.0.1:87
 ## Scope
 
 The download page is free and has no billing or analytics. The extension requires Google sign-in and uses Supabase for the free allowance of three distinct assignments per UTC calendar month. Returning to the same assignment in that month does not consume another use. The interactive hero is a demonstration only and does not connect to assignments. The website does not install the extension automatically; the installation guide explains Chrome's manual Load unpacked flow. Published at https://brianmcentee.github.io/quickquizitive/ using GitHub Pages from main / (root). The first deployment succeeded and the public download was verified against the packaged v0.20.4 extension.
+
+## Account dashboard and product walkthrough
+
+`dashboard.html` shows live `qq_account` data after a separate website Google sign-in, using the same Supabase account as the extension. It shows identity, plan, remaining assignments, used assignments, and UTC reset date; admin accounts display Unlimited. It cannot reserve or submit assignments. The Google flow uses code + PKCE, the already-authorized site root callback, and tab-scoped session storage. `app.js` routes root callbacks to the dashboard; `web-account.js` never stores Google provider tokens. No service-role or OAuth client secret is included. Sign-out is local to the website session.
+
+The homepage includes a four-step illustrative animated walkthrough. It pauses when offscreen or the tab is hidden, supports manual steps and pause/play, and defaults to paused for reduced-motion preferences. No account data appears in the public illustration.
