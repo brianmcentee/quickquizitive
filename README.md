@@ -29,3 +29,7 @@ The download page is free and has no billing or analytics. The extension require
 `dashboard.html` shows live `qq_account` data after a separate website Google sign-in, using the same Supabase account as the extension. It shows identity, plan, remaining assignments, used assignments, and UTC reset date; admin accounts display Unlimited. It cannot reserve or submit assignments. The Google flow uses code + PKCE, the already-authorized site root callback, and tab-scoped session storage. `app.js` routes root callbacks to the dashboard; `web-account.js` never stores Google provider tokens. No service-role or OAuth client secret is included. Sign-out is local to the website session.
 
 The homepage includes a four-step illustrative animated walkthrough. It pauses when offscreen or the tab is hidden, supports manual steps and pause/play, and defaults to paused for reduced-motion preferences. No account data appears in the public illustration.
+
+## Unlimited access codes
+
+Signed-in users can redeem a single-use access code from their dashboard. Redemption grants unlimited assignment access without admin privileges. The owner dashboard provides Generate code, Copy code, a recent-code list, and revocation for unused codes. Raw codes are displayed once and are never stored in the website source; the server stores only SHA-256 hashes. Migration 003 must be applied before deploying these controls. No extension download is required for an account to receive the unlimited allowance.

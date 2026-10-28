@@ -40,13 +40,19 @@ export function createWebAccount({storage=sessionStorage,fetcher=fetch,cryptoImp
     if(!pending?.verifier||now()-pending.created>600000||now()<pending.created)throw new Error('This sign-in link has expired. Please start again from this tab.');
     save(await request('/auth/v1/token?grant_type=pkce',{auth_code:code,code_verifier:pending.verifier}));
   }
-  async function status(){
-    let current=await session();if(!current)return null;
-    let usage;
-    try{usage=await request('/rest/v1/rpc/qq_account',{},current.access_token);}
-    catch(error){if(error.status!==401)throw error;current=await session(true);usage=await request('/rest/v1/rpc/qq_account',{},current.access_token);}
-    return {user:current.user,...usage};
+  async function rpc(name,args={}) {
+    let current=await session();if(!current)throw new Error('Please sign in before continuing.');
+    try{return await request('/rest/v1/rpc/'+name,args,current.access_token);}
+    catch(error){if(error.status!==401)throw error;current=await session(true);return request('/rest/v1/rpc/'+name,args,current.access_token);}
   }
+  async function status(){
+    const current=await session();if(!current)return null;
+    return {user:current.user,...await rpc('qq_account')};
+  }
+  const redeemCode=code=>rpc('qq_redeem_code',{p_code:code});
+  const createCode=()=>rpc('qq_code_admin',{p_action:'create'});
+  const listCodes=()=>rpc('qq_code_admin',{p_action:'list'});
+  const revokeCode=id=>rpc('qq_code_admin',{p_action:'revoke',p_id:id});
   async function logout(){const current=read(sessionKey);storage.removeItem(sessionKey);storage.removeItem(pkceKey);if(current)await request('/auth/v1/logout?scope=local',{},current.access_token).catch(()=>{});}
-  return {login,finishLogin,status,logout};
+  return {login,finishLogin,status,logout,redeemCode,createCode,listCodes,revokeCode};
 }
