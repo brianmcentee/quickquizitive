@@ -24,26 +24,26 @@ document.getElementById('demo-minimize').addEventListener('click', event => {
   event.currentTarget.setAttribute('aria-label', minimized ? 'Expand preview' : 'Minimize preview');
 });
 
-const theater=document.querySelector('.flow-theater');
-const chapters=[...document.querySelectorAll('[data-flow-step]')];
-const pause=document.getElementById('flow-pause');
+const film=document.querySelector('.product-film');
+const filmSteps=[...document.querySelectorAll('[data-film-step]')];
+const filmPlay=document.getElementById('film-play');
 const reduced=matchMedia('(prefers-reduced-motion: reduce)');
-const captions=[
- ['A permanent home for a small helper.','Download the ZIP, extract it, and move the folder to a permanent home before installing.','quickquizitive / download'],
- ['A few steps. One installation.','At chrome://extensions, enable Developer mode, choose Load unpacked, and select the extracted folder—not the ZIP.','chrome://extensions'],
- ['Your account, right in the panel.','Open QuickQuizitive from Chrome’s extensions menu on your assignment. Sign in with Google, check your allowance, or redeem an access code.','Your assignment / account'],
- ['Press Run. Keep control.','The runner uses supported question controls and advances automatically. Press Stop whenever you want to take over.','Your assignment / running'],
- ['Less panel. More room.','Minimize to Run and Stop. The runner keeps going while you click elsewhere. Drag the bar wherever it fits.','Your assignment / compact controls'],
- ['A clear finish. Built in.','The runner stops when the assignment displays 100%. The panel shows Completed · 100%, including in compact mode.','Your assignment / completed']
+const shots=[
+ ['A small download. A simple start.','Download, extract, and load the extension in Chrome. Keep the extracted folder somewhere permanent.'],
+ ['Everything, right where you work.','Open QuickQuizitive on your assignment. Your account, allowance, and Run and Stop controls live in the floating panel.'],
+ ['Press Run. Find your rhythm.','The runner works through supported questions and advances automatically. Stop whenever you want to answer on your own.'],
+ ['A little panel. A lot more room.','Minimize to compact controls, then drag the bar out of the way. Clicking elsewhere doesn’t stop the runner.'],
+ ['The finish line is built in.','The runner stops at 100%. The latest version also shows a Completed · 100% message in both panel sizes.']
 ];
-let flowStep=0,flowTimer=null,flowVisible=false,flowPaused=reduced.matches;
-function setFlowStep(step){flowStep=step;theater.dataset.step=String(step);chapters.forEach((button,index)=>{button.classList.toggle('active',index===step);button.setAttribute('aria-pressed',String(index===step));});document.getElementById('scene-callout').textContent=captions[step][0];document.getElementById('scene-address').textContent=captions[step][2];document.getElementById('flow-explanation').textContent=captions[step][1];document.getElementById('flow-progress').textContent=['0%','0%','0%','42%','78%','100%'][step];document.getElementById('scene-toggle').textContent=step===4?'+':'−';document.querySelector('.product-account strong').textContent=step>=3?'2 of 3 assignments remaining':'3 of 3 assignments remaining';}
-function scheduleFlow(){clearInterval(flowTimer);flowTimer=null;pause.textContent=flowPaused?'▶ Play':'Ⅱ Pause';pause.setAttribute('aria-label',flowPaused?'Play walkthrough':'Pause walkthrough');if(flowVisible&&!flowPaused&&!document.hidden)flowTimer=setInterval(()=>setFlowStep((flowStep+1)%captions.length),5200);}
-chapters.forEach(button=>button.addEventListener('click',()=>{setFlowStep(Number(button.dataset.flowStep));flowPaused=true;scheduleFlow();}));
-pause.addEventListener('click',()=>{flowPaused=!flowPaused;scheduleFlow();});
-new IntersectionObserver(entries=>{flowVisible=entries[0].isIntersecting;scheduleFlow();},{threshold:.2}).observe(theater);
-document.addEventListener('visibilitychange',scheduleFlow);
-reduced.addEventListener('change',()=>{if(reduced.matches)flowPaused=true;scheduleFlow();});
-scheduleFlow();
-
-setFlowStep(0);
+let shot=0,playing=false,inView=false,elapsed=0,lastTime=0,frame=null,finishedFilm=false;
+const shotLength=6500;
+function drawFilm(){document.querySelectorAll('.film-shot').forEach((el,i)=>el.classList.toggle('is-active',i===shot));film.dataset.shot=String(shot);film.dataset.playing=String(playing);filmSteps.forEach((button,i)=>{button.setAttribute('aria-pressed',String(i===shot));button.style.setProperty('--played',`${i<shot?100:i===shot?elapsed/shotLength*100:0}%`);});document.getElementById('film-number').textContent=`0${shot+1} / 05`;document.getElementById('film-title').textContent=shots[shot][0];document.getElementById('film-description').textContent=shots[shot][1];filmPlay.textContent=playing?'Ⅱ Pause':finishedFilm?'↺ Play again':'▶ Play';filmPlay.setAttribute('aria-label',playing?'Pause product demo':'Play product demo');}
+function tickFilm(now){if(!playing||!inView||document.hidden){frame=null;lastTime=0;return;}if(lastTime)elapsed+=Math.min(now-lastTime,100);lastTime=now;if(elapsed>=shotLength){if(shot===shots.length-1){elapsed=shotLength;playing=false;finishedFilm=true;}else{shot++;elapsed=0;}}drawFilm();if(playing)frame=requestAnimationFrame(tickFilm);else frame=null;}
+function scheduleFilm(){if(frame)cancelAnimationFrame(frame);frame=null;lastTime=0;if(playing&&inView&&!document.hidden)frame=requestAnimationFrame(tickFilm);drawFilm();}
+filmPlay.addEventListener('click',()=>{if(finishedFilm){shot=0;elapsed=0;finishedFilm=false;}playing=!playing;scheduleFilm();});
+document.getElementById('film-replay').addEventListener('click',()=>{shot=0;elapsed=0;finishedFilm=false;playing=!reduced.matches;scheduleFilm();});
+filmSteps.forEach(button=>button.addEventListener('click',()=>{shot=Number(button.dataset.filmStep);elapsed=0;finishedFilm=false;playing=false;scheduleFilm();}));
+new IntersectionObserver(entries=>{inView=entries[0].isIntersecting;scheduleFilm();},{threshold:.25}).observe(film);
+document.addEventListener('visibilitychange',scheduleFilm);
+reduced.addEventListener('change',()=>{if(reduced.matches)playing=false;scheduleFilm();});
+drawFilm();
